@@ -1,7 +1,7 @@
 use std::{self, io};
 
 use crossterm::{
-    event::{read, DisableMouseCapture, EnableMouseCapture, Event, KeyEvent},
+    event::{read, DisableMouseCapture, EnableMouseCapture, Event, KeyCode, KeyEvent},
     execute,
     terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
 };
@@ -37,20 +37,25 @@ pub fn start() -> Result<(), io::Error> {
 }
 
 fn update<B: Backend>(frame: &mut Frame<B>, state: &mut State) {
-    draw(frame, state);
     let _ = read_event(state);
+    draw(frame, state);
 }
 fn draw<B: Backend>(frame: &mut Frame<B>, state: &mut State) {
+    let paragraph_content = state
+        .guessed
+        .iter()
+        .map(|i| i.to_string())
+        .collect::<Vec<String>>()
+        .join(",");
+    let paragraph_block = Block::default().borders(Borders::ALL).style(
+        Style::default()
+            .bg(tui::style::Color::DarkGray)
+            .fg(tui::style::Color::LightGreen),
+    );
     frame.render_widget(
-        Paragraph::new(state.count.to_string())
+        Paragraph::new(paragraph_content)
             .alignment(tui::layout::Alignment::Center)
-            .block(
-                Block::default().borders(Borders::ALL).style(
-                    Style::default()
-                        .bg(tui::style::Color::DarkGray)
-                        .fg(tui::style::Color::LightGreen),
-                ),
-            ),
+            .block(paragraph_block),
         frame.size(),
     );
 }
@@ -65,11 +70,10 @@ fn read_event(state: &mut State) -> crossterm::Result<()> {
 
 fn handle_key_event(e: KeyEvent, state: &mut State) {
     match (e.code, e.modifiers) {
-        (crossterm::event::KeyCode::Char('c'), crossterm::event::KeyModifiers::CONTROL) => {
-            state.should_quit = true
-        }
-        (crossterm::event::KeyCode::Up, _) => state.count += 1,
-        (crossterm::event::KeyCode::Down, _) => state.count -= 1,
+        (KeyCode::Char('c'), crossterm::event::KeyModifiers::CONTROL) => state.should_quit = true,
+        (KeyCode::Up, _) => state.count += 1,
+        (KeyCode::Down, _) => state.count -= 1,
+        (KeyCode::Char(c), _) => state.guessed.push(c),
         _ => (),
     }
 }

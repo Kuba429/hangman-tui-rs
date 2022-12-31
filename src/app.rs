@@ -73,7 +73,7 @@ fn handle_key_event(e: KeyEvent, state: &mut State) {
         (KeyCode::Char('c'), crossterm::event::KeyModifiers::CONTROL) => state.should_quit = true,
         (KeyCode::Up, _) => state.count += 1,
         (KeyCode::Down, _) => state.count -= 1,
-        (KeyCode::Char(c), _) => state.guessed.push(c),
+        (KeyCode::Char(c), _) => state.guess(c),
         _ => (),
     }
 }

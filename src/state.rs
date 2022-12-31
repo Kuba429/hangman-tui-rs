@@ -4,8 +4,8 @@ pub struct State {
     pub guessed: Vec<char>,
 }
 const ALPHABET: [char; 26] = [
-    'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's',
-    't', 'u', 'v', 'w', 'x', 'y', 'z',
+    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S',
+    'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
 ];
 impl State {
     pub fn new() -> State {
@@ -16,6 +16,7 @@ impl State {
         }
     }
     pub fn guess(&mut self, new_char: char) {
+        let new_char = new_char.to_ascii_uppercase();
         if ALPHABET.contains(&new_char) && !self.guessed.contains(&new_char) {
             self.guessed.push(new_char);
         }

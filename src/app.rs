@@ -1,4 +1,4 @@
-use std::{self, io};
+use std;
 
 use crossterm::{
     event::{read, DisableMouseCapture, EnableMouseCapture, Event, KeyCode, KeyEvent},
@@ -7,14 +7,12 @@ use crossterm::{
 };
 use tui::{
     backend::{Backend, CrosstermBackend},
-    style::Style,
-    widgets::{Block, Borders, Paragraph},
     Frame, Terminal,
 };
 
-use crate::state::State;
+use crate::{state::State, widgets::get_letters_paragraph};
 
-pub fn start() -> Result<(), io::Error> {
+pub fn start() -> crossterm::Result<()> {
     enable_raw_mode()?;
     let mut stdout = std::io::stdout();
     execute!(stdout, EnterAlternateScreen, EnableMouseCapture)?;
@@ -41,23 +39,8 @@ fn update<B: Backend>(frame: &mut Frame<B>, state: &mut State) {
     draw(frame, state);
 }
 fn draw<B: Backend>(frame: &mut Frame<B>, state: &mut State) {
-    let paragraph_content = state
-        .guessed
-        .iter()
-        .map(|i| i.to_string())
-        .collect::<Vec<String>>()
-        .join(",");
-    let paragraph_block = Block::default().borders(Borders::ALL).style(
-        Style::default()
-            .bg(tui::style::Color::DarkGray)
-            .fg(tui::style::Color::LightGreen),
-    );
-    frame.render_widget(
-        Paragraph::new(paragraph_content)
-            .alignment(tui::layout::Alignment::Center)
-            .block(paragraph_block),
-        frame.size(),
-    );
+    let paragraph = get_letters_paragraph(&state);
+    frame.render_widget(paragraph, frame.size());
 }
 
 fn read_event(state: &mut State) -> crossterm::Result<()> {

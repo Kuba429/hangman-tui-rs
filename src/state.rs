@@ -1,12 +1,10 @@
+use crate::constants::ALPHABET;
+
 pub struct State {
     pub should_quit: bool,
     pub count: i32,
     pub guessed: Vec<char>,
 }
-const ALPHABET: [char; 26] = [
-    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S',
-    'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-];
 impl State {
     pub fn new() -> State {
         State {

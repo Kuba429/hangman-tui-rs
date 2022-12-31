@@ -3,15 +3,20 @@ use tui::{
     widgets::{Block, Borders, Paragraph},
 };
 
-use crate::state::State;
+use crate::{constants::ALPHABET, state::State};
 
 pub fn get_letters_paragraph(state: &State) -> Paragraph {
-    let paragraph_content = state
-        .guessed
+    let paragraph_content = ALPHABET
         .iter()
-        .map(|i| i.to_string())
+        .map(|i| {
+            return if state.guessed.contains(i) {
+                i.to_string()
+            } else {
+                String::from("_")
+            };
+        })
         .collect::<Vec<String>>()
-        .join(",");
+        .join(" ");
     let paragraph_block = Block::default().borders(Borders::ALL).style(
         Style::default()
             .bg(tui::style::Color::DarkGray)

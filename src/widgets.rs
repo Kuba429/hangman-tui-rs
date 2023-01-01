@@ -4,7 +4,7 @@ use tui::{
     widgets::{Block, BorderType, Borders, Paragraph},
 };
 
-use crate::{constants::ALPHABET, state::State};
+use crate::state::State;
 
 pub fn get_universal_style() -> Style {
     Style::default()
@@ -29,17 +29,20 @@ pub fn get_chunks(constraints: Vec<u16>, split: Rect) -> Vec<Rect> {
 }
 
 pub fn get_letters_paragraph(state: &State) -> Paragraph {
-    let paragraph_content = ALPHABET
+    let paragraph_content = state
+        .answer
         .iter()
         .map(|i| {
             return if state.guessed.contains(i) {
                 i.to_string()
+            } else if *i == ' ' {
+                String::from(" ")
             } else {
                 String::from("_")
             };
         })
         .collect::<Vec<String>>()
-        .join(" ");
+        .join("");
     let paragraph_block = Block::default()
         .borders(Borders::LEFT | Borders::RIGHT | Borders::BOTTOM)
         .border_type(get_universal_border_type())

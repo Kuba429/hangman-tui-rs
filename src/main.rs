@@ -4,6 +4,7 @@ mod state;
 mod widgets;
 use crate::app::start;
 
-fn main() {
-    let _app = start();
+fn main() -> crossterm::Result<()> {
+    start()?;
+    Ok(())
 }

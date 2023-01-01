@@ -7,15 +7,15 @@ use crossterm::{
 };
 use tui::{
     backend::{Backend, CrosstermBackend},
-    layout::{Constraint, Layout},
-    widgets::{BorderType, Borders, Paragraph},
+    widgets::{Block, Borders},
     Frame, Terminal,
 };
 
 use crate::{
     state::State,
     widgets::{
-        default_block, get_hangman_widget, get_letters_paragraph, get_universal_border_type,
+        get_chunks, get_hangman_widget, get_letters_paragraph, get_universal_border_type,
+        get_universal_style,
     },
 };
 
@@ -46,28 +46,19 @@ fn update<B: Backend>(frame: &mut Frame<B>, state: &mut State) {
     draw(frame, state);
 }
 fn draw<B: Backend>(frame: &mut Frame<B>, state: &mut State) {
-    let chunks = Layout::default()
-        .direction(tui::layout::Direction::Vertical)
-        .constraints(
-            [
-                Constraint::Percentage(20),
-                Constraint::Percentage(50),
-                Constraint::Percentage(30),
-            ]
-            .as_ref(),
-        )
-        .split(frame.size());
-
-    let filler_block = default_block()
-        .borders(Borders::LEFT | Borders::RIGHT | Borders::TOP)
-        .border_type(get_universal_border_type());
-    frame.render_widget(filler_block, chunks[0]);
-
-    let paragraph = get_letters_paragraph(&state);
-    frame.render_widget(paragraph, chunks[2]);
-
-    let paragraph = get_hangman_widget();
-    frame.render_widget(paragraph, chunks[1]);
+    let chunks = get_chunks(vec![20, 50, 30], frame.size());
+    // filler block
+    frame.render_widget(
+        Block::default()
+            .borders(Borders::LEFT | Borders::RIGHT | Borders::TOP)
+            .border_type(get_universal_border_type())
+            .style(get_universal_style()),
+        chunks[0],
+    );
+    // hangman drawing
+    frame.render_widget(get_hangman_widget(), chunks[1]);
+    // letters
+    frame.render_widget(get_letters_paragraph(&state), chunks[2]);
 }
 
 fn read_event(state: &mut State) -> crossterm::Result<()> {

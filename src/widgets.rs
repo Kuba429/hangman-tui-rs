@@ -1,4 +1,5 @@
 use tui::{
+    layout::{Constraint, Layout, Rect},
     style::Style,
     widgets::{Block, BorderType, Borders, Paragraph},
 };
@@ -12,6 +13,19 @@ pub fn get_universal_style() -> Style {
 }
 pub fn get_universal_border_type() -> BorderType {
     BorderType::Rounded
+}
+
+pub fn get_chunks(constraints: Vec<u16>, split: Rect) -> Vec<Rect> {
+    Layout::default()
+        .direction(tui::layout::Direction::Vertical)
+        .constraints(
+            constraints
+                .into_iter()
+                .map(|c| Constraint::Percentage(c))
+                .collect::<Vec<Constraint>>()
+                .as_ref(),
+        )
+        .split(split)
 }
 
 pub fn get_letters_paragraph(state: &State) -> Paragraph {
@@ -43,11 +57,4 @@ pub fn get_hangman_widget() -> Paragraph<'static> {
     Paragraph::new("Hangman")
         .alignment(tui::layout::Alignment::Center)
         .block(block)
-}
-
-pub fn default_block() -> Block<'static> {
-    Block::default()
-        .borders(Borders::LEFT | Borders::RIGHT | Borders::BOTTOM)
-        .border_type(get_universal_border_type())
-        .style(get_universal_style())
 }

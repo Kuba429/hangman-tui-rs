@@ -4,12 +4,13 @@ use tui::{
     widgets::{Block, BorderType, Borders, Paragraph},
 };
 
-use crate::state::State;
+use crate::{
+    constants::{ALPHABET, HANGMAN_STAGES},
+    state::State,
+};
 
 pub fn get_universal_style() -> Style {
-    Style::default()
-        .bg(tui::style::Color::White)
-        .fg(tui::style::Color::Black)
+    Style::default().fg(tui::style::Color::White)
 }
 pub fn get_universal_border_type() -> BorderType {
     BorderType::Rounded
@@ -28,7 +29,7 @@ pub fn get_chunks(constraints: Vec<u16>, split: Rect) -> Vec<Rect> {
         .split(split)
 }
 
-pub fn get_letters_paragraph(state: &State) -> Paragraph {
+pub fn get_answer_paragraph(state: &State) -> Paragraph {
     let paragraph_content = state
         .answer
         .iter()
@@ -44,92 +45,34 @@ pub fn get_letters_paragraph(state: &State) -> Paragraph {
         .collect::<Vec<String>>()
         .join("");
     let paragraph_block = Block::default()
-        .borders(Borders::LEFT | Borders::RIGHT | Borders::BOTTOM)
         .border_type(get_universal_border_type())
         .style(get_universal_style());
     return Paragraph::new(paragraph_content)
         .alignment(tui::layout::Alignment::Center)
         .block(paragraph_block);
 }
-// PLEASE NOTE THAT THE DRAWING LOOKS DIFFERENCT WHEN RENDERED
-const HANGMAN_STAGES: [&str; 7] = [
-    "
-  +------+
-  |      |
-  |      |
-  o      |
-/|\\     |
-/ \\     |
-         |
-        =======
-",
-    "
-  +------+
-  |      |
-  |      |
-  o      |
-/|\\     |
-         |
-         |
-        =======
-",
-    "
-  +------+
-  |      |
-  |      |
-  o      |
-         |
-         |
-         |
-        =======
-",
-    "
-  +------+
-         |
-         |
-         |
-         |
-         |
-         |
-        =======
-",
-    "
-          
-         |
-         |
-         |
-         |
-         |
-         |
-        =======
-",
-    "
-          
-          
-          
-          
-          
-          
-          
-        =======
-",
-    "
-          
-          
-          
-          
-          
-          
-          
-               
-",
-];
 pub fn get_hangman_widget(state: &State) -> Paragraph<'static> {
     let block = Block::default()
         .style(get_universal_style())
-        .border_type(get_universal_border_type())
-        .borders(Borders::LEFT | Borders::RIGHT);
+        .border_type(get_universal_border_type());
     Paragraph::new(HANGMAN_STAGES[state.tries_left as usize])
         .alignment(tui::layout::Alignment::Center)
         .block(block)
+}
+
+pub fn get_available_letters_paragraph(state: &State) -> Paragraph {
+    let block = Block::default()
+        .style(get_universal_style())
+        .borders(Borders::ALL)
+        .border_style(get_universal_style().fg(tui::style::Color::DarkGray))
+        .title("Available letters")
+        .border_type(get_universal_border_type());
+    Paragraph::new(
+        ALPHABET
+            .iter()
+            .filter(|l| !state.guessed.contains(&l))
+            .collect::<String>(),
+    )
+    .block(block)
+    .alignment(tui::layout::Alignment::Center)
 }

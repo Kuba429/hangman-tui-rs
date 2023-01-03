@@ -7,15 +7,15 @@ use crossterm::{
 };
 use tui::{
     backend::{Backend, CrosstermBackend},
-    widgets::{Block, Borders},
+    widgets::Block,
     Frame, Terminal,
 };
 
 use crate::{
     state::State,
     widgets::{
-        get_chunks, get_hangman_widget, get_letters_paragraph, get_universal_border_type,
-        get_universal_style,
+        get_answer_paragraph, get_available_letters_paragraph, get_chunks, get_hangman_widget,
+        get_universal_border_type, get_universal_style,
     },
 };
 
@@ -46,19 +46,20 @@ fn update<B: Backend>(frame: &mut Frame<B>, state: &mut State) {
     draw(frame, state);
 }
 fn draw<B: Backend>(frame: &mut Frame<B>, state: &mut State) {
-    let chunks = get_chunks(vec![20, 50, 30], frame.size());
+    let chunks = get_chunks(vec![20, 20, 50, 10], frame.size());
     // filler block
     frame.render_widget(
         Block::default()
-            .borders(Borders::LEFT | Borders::RIGHT | Borders::TOP)
             .border_type(get_universal_border_type())
             .style(get_universal_style()),
         chunks[0],
     );
+    // answer
+    frame.render_widget(get_answer_paragraph(&state), chunks[1]);
     // hangman drawing
-    frame.render_widget(get_hangman_widget(&state), chunks[1]);
-    // letters
-    frame.render_widget(get_letters_paragraph(&state), chunks[2]);
+    frame.render_widget(get_hangman_widget(&state), chunks[2]);
+    // available letters
+    frame.render_widget(get_available_letters_paragraph(&state), chunks[3]);
 }
 
 fn read_event(state: &mut State) -> crossterm::Result<()> {

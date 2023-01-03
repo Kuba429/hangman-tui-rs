@@ -51,13 +51,24 @@ pub fn get_letters_paragraph(state: &State) -> Paragraph {
         .alignment(tui::layout::Alignment::Center)
         .block(paragraph_block);
 }
-
+// PLEASE NOTE THAT THE DRAWING LOOKS DIFFERENCT WHEN RENDERED
+// TODO do the other 6
+const HANGMAN_STAGES: [&str; 1] = ["
+  +------+
+  |      |
+  |      |
+  o      |
+/|\\     |
+/ \\     |
+         |
+        ===+===
+"];
 pub fn get_hangman_widget() -> Paragraph<'static> {
     let block = Block::default()
         .style(get_universal_style())
         .border_type(get_universal_border_type())
         .borders(Borders::LEFT | Borders::RIGHT);
-    Paragraph::new("Hangman")
+    Paragraph::new(HANGMAN_STAGES[0])
         .alignment(tui::layout::Alignment::Center)
         .block(block)
 }

@@ -52,8 +52,8 @@ pub fn get_letters_paragraph(state: &State) -> Paragraph {
         .block(paragraph_block);
 }
 // PLEASE NOTE THAT THE DRAWING LOOKS DIFFERENCT WHEN RENDERED
-// TODO do the other 6
-const HANGMAN_STAGES: [&str; 1] = ["
+const HANGMAN_STAGES: [&str; 7] = [
+    "
   +------+
   |      |
   |      |
@@ -61,14 +61,75 @@ const HANGMAN_STAGES: [&str; 1] = ["
 /|\\     |
 / \\     |
          |
-        ===+===
-"];
-pub fn get_hangman_widget() -> Paragraph<'static> {
+        =======
+",
+    "
+  +------+
+  |      |
+  |      |
+  o      |
+/|\\     |
+/ \\     |
+         |
+        =======
+",
+    "
+  +------+
+  |      |
+  |      |
+  o      |
+/|\\     |
+/ \\     |
+         |
+        =======
+",
+    "
+  +------+
+  |      |
+  |      |
+  o      |
+/|\\     |
+/ \\     |
+         |
+        =======
+",
+    "
+  +------+
+  |      |
+  |      |
+  o      |
+/|\\     |
+/ \\     |
+         |
+        =======
+",
+    "
+  +------+
+  |      |
+  |      |
+  o      |
+/|\\     |
+/ \\     |
+         |
+        =======
+",
+    "
+  +------+
+  |      |
+  |      |
+  o      |
+/|\\     |
+/ \\     |
+         |
+        =======
+",
+];
+pub fn get_hangman_widget(state: &State) -> Paragraph<'static> {
     let block = Block::default()
         .style(get_universal_style())
         .border_type(get_universal_border_type())
         .borders(Borders::LEFT | Borders::RIGHT);
-    Paragraph::new(HANGMAN_STAGES[0])
+    Paragraph::new(HANGMAN_STAGES[state.tries_left as usize])
         .alignment(tui::layout::Alignment::Center)
         .block(block)
 }

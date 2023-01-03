@@ -56,7 +56,7 @@ fn draw<B: Backend>(frame: &mut Frame<B>, state: &mut State) {
         chunks[0],
     );
     // hangman drawing
-    frame.render_widget(get_hangman_widget(), chunks[1]);
+    frame.render_widget(get_hangman_widget(&state), chunks[1]);
     // letters
     frame.render_widget(get_letters_paragraph(&state), chunks[2]);
 }

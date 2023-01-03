@@ -4,6 +4,7 @@ pub struct State {
     pub should_quit: bool,
     pub count: i32,
     pub guessed: Vec<char>,
+    pub tries_left: u8,
     pub answer: Vec<char>,
 }
 impl State {
@@ -11,6 +12,7 @@ impl State {
         State {
             should_quit: false,
             count: 0,
+            tries_left: 6,
             guessed: Vec::new(),
             answer: String::from("elo elo some phrase")
                 .chars()
@@ -22,6 +24,9 @@ impl State {
         let new_char = new_char.to_ascii_uppercase();
         if ALPHABET.contains(&new_char) && !self.guessed.contains(&new_char) {
             self.guessed.push(new_char);
+            if !self.answer.contains(&new_char) && self.tries_left > 0 {
+                self.tries_left -= 1;
+            }
         }
     }
 }

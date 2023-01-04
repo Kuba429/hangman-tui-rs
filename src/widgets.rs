@@ -30,20 +30,29 @@ pub fn get_chunks(constraints: Vec<u16>, split: Rect) -> Vec<Rect> {
 }
 
 pub fn get_answer_paragraph(state: &State) -> Paragraph {
-    let paragraph_content = state
-        .answer
-        .iter()
-        .map(|i| {
-            return if state.guessed.contains(i) {
-                i.to_string()
-            } else if *i == ' ' {
-                String::from(" ")
-            } else {
-                String::from("_")
-            };
-        })
-        .collect::<Vec<String>>()
-        .join("");
+    let paragraph_content = if state.game_result.is_none() {
+        state
+            .answer
+            .iter()
+            .map(|i| {
+                return if state.guessed.contains(i) {
+                    i.to_string()
+                } else if *i == ' ' {
+                    String::from(" ")
+                } else {
+                    String::from("_")
+                };
+            })
+            .collect::<Vec<String>>()
+            .join("")
+    } else {
+        state
+            .answer
+            .iter()
+            .map(char::to_string)
+            .collect::<Vec<String>>()
+            .join("")
+    };
     let paragraph_block = Block::default()
         .border_type(get_universal_border_type())
         .style(get_universal_style());

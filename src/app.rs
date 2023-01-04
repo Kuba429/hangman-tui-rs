@@ -12,6 +12,7 @@ use tui::{
 };
 
 use crate::{
+    constants::ALPHABET,
     state::State,
     widgets::{
         get_answer_paragraph, get_available_letters_paragraph, get_chunks, get_hangman_widget,
@@ -45,6 +46,13 @@ fn update<B: Backend>(frame: &mut Frame<B>, state: &mut State) {
     let _ = read_event(state);
     if state.tries_left == 0 {
         state.game_result = Some("You lost");
+    }
+    if state
+        .answer
+        .iter()
+        .all(|c| state.guessed.contains(c) || !ALPHABET.contains(c))
+    {
+        state.game_result = Some("You won")
     }
     draw(frame, state);
 }

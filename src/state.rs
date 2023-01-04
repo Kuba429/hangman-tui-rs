@@ -1,5 +1,3 @@
-use std::{fs::File, io::Read};
-
 use rand::Rng;
 
 use crate::constants::ALPHABET;
@@ -35,19 +33,15 @@ impl State {
 }
 
 fn get_random_answer() -> Vec<char> {
-    let mut lines = String::new();
-    File::open("answers.txt")
-        .expect("Can't read file with answers")
-        .read_to_string(&mut lines)
-        .expect("Can't read file with answers");
-    let lines = lines
+    let bytes = include_bytes!("answers.txt");
+    let lines = std::str::from_utf8(bytes)
+        .unwrap()
         .lines()
         .map(|l| l.to_string())
         .collect::<Vec<String>>();
 
-    let mut rng = rand::thread_rng();
-
-    lines[rng.gen_range(0..lines.len())]
+    let random_index = rand::thread_rng().gen_range(0..lines.len());
+    lines[random_index]
         .chars()
         .map(|c| c.to_ascii_uppercase())
         .collect::<Vec<char>>()

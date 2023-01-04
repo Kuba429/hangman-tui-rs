@@ -1,3 +1,7 @@
+use std::{fs::File, io::Read};
+
+use rand::Rng;
+
 use crate::constants::ALPHABET;
 
 pub struct State {
@@ -16,10 +20,7 @@ impl State {
             count: 0,
             tries_left: 6,
             guessed: Vec::new(),
-            answer: String::from("elo elo some phrase")
-                .chars()
-                .map(|c| c.to_ascii_uppercase())
-                .collect::<Vec<char>>(),
+            answer: get_random_answer(),
         }
     }
     pub fn guess(&mut self, new_char: char) {
@@ -31,4 +32,23 @@ impl State {
             }
         }
     }
+}
+
+fn get_random_answer() -> Vec<char> {
+    let mut lines = String::new();
+    File::open("answers.txt")
+        .expect("Can't read file with answers")
+        .read_to_string(&mut lines)
+        .expect("Can't read file with answers");
+    let lines = lines
+        .lines()
+        .map(|l| l.to_string())
+        .collect::<Vec<String>>();
+
+    let mut rng = rand::thread_rng();
+
+    lines[rng.gen_range(0..lines.len())]
+        .chars()
+        .map(|c| c.to_ascii_uppercase())
+        .collect::<Vec<char>>()
 }

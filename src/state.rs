@@ -2,6 +2,7 @@ use crate::constants::ALPHABET;
 
 pub struct State {
     pub should_quit: bool,
+    pub game_result: Option<&'static str>,
     pub count: i32,
     pub guessed: Vec<char>,
     pub tries_left: u8,
@@ -11,6 +12,7 @@ impl State {
     pub fn new() -> State {
         State {
             should_quit: false,
+            game_result: None,
             count: 0,
             tries_left: 6,
             guessed: Vec::new(),

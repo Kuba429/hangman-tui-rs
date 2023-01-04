@@ -43,6 +43,9 @@ pub fn start() -> crossterm::Result<()> {
 
 fn update<B: Backend>(frame: &mut Frame<B>, state: &mut State) {
     let _ = read_event(state);
+    if state.tries_left == 0 {
+        state.game_result = Some("You lost");
+    }
     draw(frame, state);
 }
 fn draw<B: Backend>(frame: &mut Frame<B>, state: &mut State) {
@@ -63,9 +66,12 @@ fn draw<B: Backend>(frame: &mut Frame<B>, state: &mut State) {
 }
 
 fn read_event(state: &mut State) -> crossterm::Result<()> {
-    match read()? {
-        Event::Key(e) => handle_key_event(e, state),
-        _ => (),
+    if let Event::Key(e) = read()? {
+        if state.game_result.is_some() {
+            state.should_quit = true
+        } else {
+            handle_key_event(e, state)
+        }
     }
     Ok(())
 }

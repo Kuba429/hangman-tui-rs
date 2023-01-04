@@ -51,6 +51,7 @@ pub fn get_answer_paragraph(state: &State) -> Paragraph {
         .alignment(tui::layout::Alignment::Center)
         .block(paragraph_block);
 }
+
 pub fn get_hangman_widget(state: &State) -> Paragraph<'static> {
     let block = Block::default()
         .style(get_universal_style())
@@ -65,14 +66,23 @@ pub fn get_available_letters_paragraph(state: &State) -> Paragraph {
         .style(get_universal_style())
         .borders(Borders::ALL)
         .border_style(get_universal_style().fg(tui::style::Color::DarkGray))
-        .title("Available letters")
+        .title(if state.game_result.is_none() {
+            "Available letters"
+        } else {
+            "Press any key to exit"
+        })
         .border_type(get_universal_border_type());
-    Paragraph::new(
+
+    let paragraph_content = if let Some(r) = &state.game_result {
+        r.to_string()
+    } else {
         ALPHABET
             .iter()
             .filter(|l| !state.guessed.contains(&l))
-            .collect::<String>(),
-    )
-    .block(block)
-    .alignment(tui::layout::Alignment::Center)
+            .collect::<String>()
+    };
+
+    Paragraph::new(paragraph_content)
+        .block(block)
+        .alignment(tui::layout::Alignment::Center)
 }
